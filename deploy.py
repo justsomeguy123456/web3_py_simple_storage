@@ -40,7 +40,7 @@ abi = compiled_sol["contracts"]["SimpleStorage.sol"]["SimpleStorage"]['abi']
 
 w3 = Web3(Web3.HTTPProvider('http://127.0.0.1:7545'))
 chain_id = 1337
-my_address = '0xE23DeAd453e235595745635C6b7BdF363689B0df'
+my_address = '0x444F2d79FAA2FcF84F420545a019645BD8c4e6bC'
 private_key = os.getenv('PRIVATE_KEY')
 
 
@@ -56,6 +56,12 @@ nonce = w3.eth.getTransactionCount(my_address)
 
 transaction = SimpleStorage.constructor().buildTransaction({'chainId':chain_id,'from':my_address,'nonce':nonce})
 
-#signed_txn = w3.eth.account(sign_transaction(transaction,private_key= private_key))
+signed_txn = w3.eth.account.sign_transaction(transaction,private_key= private_key)
 
-print(transaction)
+#send signed txt
+
+txn_hash = w3.eth.send_raw_transaction(signed_txn.rawTransaction)
+
+tx_receipt = w3.eth.wait_for_transaction_receipt(txn_hash)
+
+print(signed_txn)
